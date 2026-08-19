@@ -14,11 +14,30 @@ export async function GET() {
     }
 
     const data = await response.json();
+    
+    // Calculate total solved from breakdown if total_problems_solved is 0 or missing
+    const solved = data.total_problems_solved || 
+      ((data.School || 0) + (data.Basic || 0) + (data.Easy || 0) + (data.Medium || 0) + (data.Hard || 0));
+
+    // Calculate score from breakdown if total_score is 0 or missing
+    const score = data.total_score || 
+      ((data.School || 0) * 1 + (data.Basic || 0) * 1 + (data.Easy || 0) * 2 + (data.Medium || 0) * 4 + (data.Hard || 0) * 8);
+
+    // If both solved and score are 0, use fallback values
+    if (solved === 0 && score === 0) {
+      return Response.json({
+        username: `@${GFG_USERNAME}`,
+        profileUrl: `https://www.geeksforgeeks.org/profile/${GFG_USERNAME}?tab=activity`,
+        solved: 256,
+        score: 535,
+      });
+    }
+
     return Response.json({
       username: `@${GFG_USERNAME}`,
       profileUrl: `https://www.geeksforgeeks.org/profile/${GFG_USERNAME}?tab=activity`,
-      solved: data.total_problems_solved || 0,
-      score: data.total_score || 0,
+      solved,
+      score,
     });
   } catch (error) {
     console.error('Error fetching GeeksForGeeks stats:', error);
@@ -26,8 +45,8 @@ export async function GET() {
     return Response.json({
       username: `@${GFG_USERNAME}`,
       profileUrl: `https://www.geeksforgeeks.org/profile/${GFG_USERNAME}?tab=activity`,
-      solved: 237,
-      score: 530,
+      solved: 256,
+      score: 535,
     });
   }
 }
