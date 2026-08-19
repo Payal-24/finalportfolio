@@ -35,16 +35,6 @@ const ProjectsSection = () => {
       live: 'https://romify-project.vercel.app',
       image: '🛋️',
     },
-    {
-      id: 4,
-      title: 'Weather App',
-      description:
-        'A real-time weather application that displays current weather conditions and forecasts for any location worldwide.',
-      tech: ['HTML', 'CSS', 'JavaScript', 'API'],
-      github: '#',
-      live: '#',
-      image: '🌤️',
-    },
   ];
 
   const containerVariants = {

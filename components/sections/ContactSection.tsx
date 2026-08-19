@@ -1,8 +1,9 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { Mail, MessageCircle, MapPin, Send, Code } from 'lucide-react';
+import { useForm, ValidationError } from '@formspree/react';
 
 const ContactSection = () => {
   const [formData, setFormData] = useState({
@@ -11,46 +12,29 @@ const ContactSection = () => {
     message: '',
   });
 
-  const [status, setStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle');
-  const [errorMessage, setErrorMessage] = useState('');
+  const [state, handleSubmit, reset] = useForm("moeayjel");
+
+  // Use a ref for reset to prevent infinite re-renders if the reset function reference changes
+  const resetRef = useRef(reset);
+  useEffect(() => {
+    resetRef.current = reset;
+  }, [reset]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setStatus('sending');
-    setErrorMessage('');
-
-    try {
-      const response = await fetch('/api/contact', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
-
-      const data = await response.json();
-
-      if (response.ok && data.success) {
-        setStatus('success');
-        setFormData({ name: '', email: '', message: '' });
-        setTimeout(() => setStatus('idle'), 4000);
-      } else {
-        setStatus('error');
-        setErrorMessage(data.error || 'Something went wrong. Please try again.');
-        setTimeout(() => setStatus('idle'), 5000);
-      }
-    } catch (err: any) {
-      console.error('Submit contact form error:', err);
-      setStatus('error');
-      setErrorMessage('Failed to connect to the server. Please check your network.');
-      setTimeout(() => setStatus('idle'), 5000);
+  // Reset form inputs and Formspree state after a success timeout
+  useEffect(() => {
+    if (state.succeeded) {
+      setFormData({ name: '', email: '', message: '' });
+      const timer = setTimeout(() => {
+        resetRef.current();
+      }, 4000);
+      return () => clearTimeout(timer);
     }
-  };
+  }, [state.succeeded]);
 
   const contactInfo = [
     {
@@ -194,6 +178,12 @@ const ContactSection = () => {
                 className="w-full px-4 py-3 rounded-lg bg-white/10 dark:bg-slate-900/50 border border-white/20 dark:border-slate-700/20 text-slate-900 dark:text-white placeholder-slate-500 dark:placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-yellow-400 transition-all duration-300"
                 placeholder="Enter your name"
               />
+              <ValidationError 
+                prefix="Name" 
+                field="name"
+                errors={state.errors}
+                className="text-red-500 text-xs mt-1 block"
+              />
             </div>
 
             {/* Email Field */}
@@ -209,6 +199,12 @@ const ContactSection = () => {
                 required
                 className="w-full px-4 py-3 rounded-lg bg-white/10 dark:bg-slate-900/50 border border-white/20 dark:border-slate-700/20 text-slate-900 dark:text-white placeholder-slate-500 dark:placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-yellow-400 transition-all duration-300"
                 placeholder="Enter your email"
+              />
+              <ValidationError 
+                prefix="Email" 
+                field="email"
+                errors={state.errors}
+                className="text-red-500 text-xs mt-1 block"
               />
             </div>
 
@@ -226,35 +222,41 @@ const ContactSection = () => {
                 className="w-full px-4 py-3 rounded-lg bg-white/10 dark:bg-slate-900/50 border border-white/20 dark:border-slate-700/20 text-slate-900 dark:text-white placeholder-slate-500 dark:placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-yellow-400 resize-none transition-all duration-300"
                 placeholder="Write your message here..."
               ></textarea>
+              <ValidationError 
+                prefix="Message" 
+                field="message"
+                errors={state.errors}
+                className="text-red-500 text-xs mt-1 block"
+              />
             </div>
 
             {/* Submit Button */}
             <motion.button
               type="submit"
-              disabled={status === 'sending'}
-              whileHover={{ scale: status === 'sending' ? 1 : 1.02 }}
-              whileTap={{ scale: status === 'sending' ? 1 : 0.98 }}
+              disabled={state.submitting}
+              whileHover={{ scale: state.submitting ? 1 : 1.02 }}
+              whileTap={{ scale: state.submitting ? 1 : 0.98 }}
               className={`w-full btn-primary flex items-center justify-center gap-2 ${
-                status === 'sending' ? 'opacity-70 cursor-not-allowed' : ''
+                state.submitting ? 'opacity-70 cursor-not-allowed' : ''
               }`}
             >
-              {status === 'sending' && (
+              {state.submitting && (
                 <>
                   <span className="w-5 h-5 border-2 border-slate-900 border-t-transparent rounded-full animate-spin"></span>
                   Sending...
                 </>
               )}
-              {status === 'success' && (
+              {state.succeeded && (
                 <>
                   <span>✓ Message Sent!</span>
                 </>
               )}
-              {status === 'error' && (
+              {!state.submitting && !state.succeeded && state.errors && (
                 <>
                   <span>✗ Failed to Send</span>
                 </>
               )}
-              {status === 'idle' && (
+              {!state.submitting && !state.succeeded && !state.errors && (
                 <>
                   <Send size={20} />
                   Send Message
@@ -263,9 +265,9 @@ const ContactSection = () => {
             </motion.button>
 
             {/* Error Message Notification */}
-            {status === 'error' && (
+            {state.errors && !state.submitting && !state.succeeded && (
               <p className="mt-3 text-red-500 text-sm text-center font-medium animate-pulse">
-                {errorMessage}
+                Something went wrong. Please check your inputs and try again.
               </p>
             )}
           </motion.form>
