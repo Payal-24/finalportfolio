@@ -3,11 +3,14 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowDown, Download, Mail } from 'lucide-react';
+import Image from 'next/image';
 import Link from 'next/link';
+import profilePicture from '../../profilepicture.png';
+
+const roles = ['C++ Developer', 'Java Learner', 'Web Developer', 'Problem Solver'];
 
 const HeroSection = () => {
   const [displayedText, setDisplayedText] = useState('');
-  const roles = ['C++ Developer', 'Java Learner', 'Web Developer', 'Problem Solver'];
   const [currentRoleIndex, setCurrentRoleIndex] = useState(0);
   const [isDeleting, setIsDeleting] = useState(false);
 
@@ -71,7 +74,7 @@ const HeroSection = () => {
         animate="visible"
         className="relative z-10 section-container text-center"
       >
-        {/* Profile Image Placeholder */}
+        {/* Profile Image */}
         <motion.div
           variants={itemVariants}
           className="mb-8 flex justify-center"
@@ -79,8 +82,15 @@ const HeroSection = () => {
           <div className="relative w-40 h-40 md:w-48 md:h-48">
             <div className="absolute inset-0 bg-gradient-to-br from-yellow-400 to-pink-400 rounded-full opacity-20 animate-pulse"></div>
             <div className="absolute inset-2 bg-gradient-to-br from-yellow-400/30 to-pink-400/30 rounded-full backdrop-blur-md border border-white/30"></div>
-            <div className="relative w-full h-full rounded-full bg-gradient-to-br from-slate-400 to-slate-600 flex items-center justify-center text-white text-6xl font-bold">
-              P
+            <div className="relative w-full h-full overflow-hidden rounded-full border border-white/40 shadow-2xl shadow-pink-500/20">
+              <Image
+                src={profilePicture}
+                alt="Profile photo of Payal"
+                fill
+                priority
+                sizes="(min-width: 768px) 12rem, 10rem"
+                className="object-cover"
+              />
             </div>
           </div>
         </motion.div>
@@ -128,10 +138,14 @@ const HeroSection = () => {
           variants={itemVariants}
           className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16"
         >
-          <button className="btn-primary group flex items-center gap-2">
+          <a
+            href="/Payal Resume.pdf"
+            download="Payal Resume.pdf"
+            className="btn-primary group flex items-center gap-2"
+          >
             <Download size={20} className="group-hover:animate-bounce" />
             Download Resume
-          </button>
+          </a>
           <Link
             href="#contact"
             className="btn-secondary flex items-center gap-2"

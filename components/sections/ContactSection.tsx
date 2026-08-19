@@ -3,7 +3,6 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Mail, MessageCircle, MapPin, Send, Code } from 'lucide-react';
-import Link from 'next/link';
 
 const ContactSection = () => {
   const [formData, setFormData] = useState({
@@ -12,22 +11,45 @@ const ContactSection = () => {
     message: '',
   });
 
-  const [submitted, setSubmitted] = useState(false);
+  const [status, setStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle');
+  const [errorMessage, setErrorMessage] = useState('');
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle form submission here
-    console.log('Form submitted:', formData);
-    setSubmitted(true);
-    setTimeout(() => {
-      setFormData({ name: '', email: '', message: '' });
-      setSubmitted(false);
-    }, 3000);
+    setStatus('sending');
+    setErrorMessage('');
+
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        setStatus('success');
+        setFormData({ name: '', email: '', message: '' });
+        setTimeout(() => setStatus('idle'), 4000);
+      } else {
+        setStatus('error');
+        setErrorMessage(data.error || 'Something went wrong. Please try again.');
+        setTimeout(() => setStatus('idle'), 5000);
+      }
+    } catch (err: any) {
+      console.error('Submit contact form error:', err);
+      setStatus('error');
+      setErrorMessage('Failed to connect to the server. Please check your network.');
+      setTimeout(() => setStatus('idle'), 5000);
+    }
   };
 
   const contactInfo = [
@@ -209,21 +231,43 @@ const ContactSection = () => {
             {/* Submit Button */}
             <motion.button
               type="submit"
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              className="w-full btn-primary flex items-center justify-center gap-2"
+              disabled={status === 'sending'}
+              whileHover={{ scale: status === 'sending' ? 1 : 1.02 }}
+              whileTap={{ scale: status === 'sending' ? 1 : 0.98 }}
+              className={`w-full btn-primary flex items-center justify-center gap-2 ${
+                status === 'sending' ? 'opacity-70 cursor-not-allowed' : ''
+              }`}
             >
-              {submitted ? (
+              {status === 'sending' && (
+                <>
+                  <span className="w-5 h-5 border-2 border-slate-900 border-t-transparent rounded-full animate-spin"></span>
+                  Sending...
+                </>
+              )}
+              {status === 'success' && (
                 <>
                   <span>✓ Message Sent!</span>
                 </>
-              ) : (
+              )}
+              {status === 'error' && (
+                <>
+                  <span>✗ Failed to Send</span>
+                </>
+              )}
+              {status === 'idle' && (
                 <>
                   <Send size={20} />
                   Send Message
                 </>
               )}
             </motion.button>
+
+            {/* Error Message Notification */}
+            {status === 'error' && (
+              <p className="mt-3 text-red-500 text-sm text-center font-medium animate-pulse">
+                {errorMessage}
+              </p>
+            )}
           </motion.form>
         </div>
       </div>

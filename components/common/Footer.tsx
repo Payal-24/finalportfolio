@@ -2,16 +2,15 @@
 
 import { motion } from 'framer-motion';
 import { Code, Mail, MessageCircle, Heart, ArrowUp } from 'lucide-react';
-import Link from 'next/link';
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
 
   const socials = [
-    { icon: Code, href: '#', label: 'GitHub' },
-    { icon: MessageCircle, href: '#', label: 'LinkedIn' },
+    { icon: Code, href: 'https://github.com/Payal-24', label: 'GitHub' },
+    { icon: MessageCircle, href: 'https://www.linkedin.com/in/payal-31b0ab336/', label: 'LinkedIn' },
     { icon: Heart, href: '#', label: 'Twitter' },
-    { icon: Mail, href: '#', label: 'Email' },
+    { icon: Mail, href: 'mailto:payaljindal537@gmail.com', label: 'Email' },
   ];
 
   const scrollToTop = () => {
@@ -71,13 +70,21 @@ const Footer = () => {
           >
             <h4 className="font-semibold mb-4 text-slate-900 dark:text-white">Resources</h4>
             <ul className="space-y-2">
-              {['GitHub', 'LeetCode', 'Blog', 'Resume'].map((link) => (
-                <li key={link}>
+              {[
+                { label: 'GitHub', href: 'https://github.com/Payal-24' },
+                { label: 'LeetCode', href: 'https://leetcode.com/u/Payal2007/' },
+                { label: 'Blog', href: '#' },
+                { label: 'Resume', href: '/Payal Resume.pdf', download: 'Payal Resume.pdf' }
+              ].map((link) => (
+                <li key={link.label}>
                   <a
-                    href="#"
+                    href={link.href}
+                    download={'download' in link ? link.download : undefined}
+                    target={link.href === '#' ? undefined : '_blank'}
+                    rel={link.href === '#' ? undefined : 'noopener noreferrer'}
                     className="text-sm text-slate-600 dark:text-slate-400 hover:text-yellow-400 transition-colors duration-300"
                   >
-                    {link}
+                    {link.label}
                   </a>
                 </li>
               ))}
@@ -134,6 +141,8 @@ const Footer = () => {
                 <motion.a
                   key={index}
                   href={social.href}
+                  target={social.href === '#' ? undefined : '_blank'}
+                  rel={social.href === '#' ? undefined : 'noopener noreferrer'}
                   whileHover={{ scale: 1.2, rotate: 5 }}
                   whileTap={{ scale: 0.95 }}
                   className="btn-icon"

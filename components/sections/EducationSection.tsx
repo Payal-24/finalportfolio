@@ -10,7 +10,7 @@ const EducationSection = () => {
       institution: 'Chitkara University',
       period: 'Jul 2023 - Present',
       year: '3rd Year (Current)',
-      cgpa: '8.94',
+      cgpa: '9.01',
       highlights: [
         'Focus on Core CS Fundamentals',
         'Data Structures & Algorithms',

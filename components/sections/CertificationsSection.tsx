@@ -3,52 +3,34 @@
 import { motion } from 'framer-motion';
 import { Award } from 'lucide-react';
 
-const CertificationsSection = () => {
-  const certifications = [
-    {
-      title: 'Cloud Computing Fundamentals',
-      issuer: 'Google Cloud Skills Boost',
-      date: 'Dec 2024',
-      icon: '☁️',
-      color: 'from-blue-500 to-cyan-500',
-    },
-    {
-      title: 'Data Structures & Algorithms',
-      issuer: 'NPTEL - IIT Kharagpur',
-      date: 'Nov 2024',
-      icon: '📊',
-      color: 'from-orange-500 to-red-500',
-    },
-    {
-      title: 'Web Development Masterclass',
-      issuer: 'Udemy',
-      date: 'Oct 2024',
-      icon: '🌐',
-      color: 'from-purple-500 to-pink-500',
-    },
-    {
-      title: 'JavaScript Essentials',
-      issuer: 'Coursera',
-      date: 'Sep 2024',
-      icon: '📜',
-      color: 'from-yellow-500 to-orange-500',
-    },
-    {
-      title: 'Git & GitHub Fundamentals',
-      issuer: 'LinkedIn Learning',
-      date: 'Aug 2024',
-      icon: '💾',
-      color: 'from-green-500 to-emerald-500',
-    },
-    {
-      title: 'React.js - Complete Guide',
-      issuer: 'Udemy',
-      date: 'Jul 2024',
-      icon: '⚛️',
-      color: 'from-cyan-500 to-blue-500',
-    },
-  ];
+const certifications = [
+  {
+    title: 'Certificate of Git Skills',
+    issuer: 'Git Skills',
+    date: 'Jun 2026',
+    icon: 'Git',
+    color: 'from-orange-500 to-red-500',
+    certificateUrl: '/certificates/git-skills.pdf',
+  },
+  {
+    title: 'Certificate of Bitathon',
+    issuer: 'Online Bitathon Participant',
+    date: '2024',
+    icon: 'BT',
+    color: 'from-blue-500 to-cyan-500',
+    certificateUrl: '/certificates/bitathon.pdf',
+  },
+  {
+    title: 'Tata Crucible Quiz Certificate',
+    issuer: 'Tata Crucible Quiz',
+    date: '2024',
+    icon: 'TC',
+    color: 'from-purple-500 to-indigo-500',
+    certificateUrl: '/certificates/tata-crucible-quiz.pdf',
+  },
+];
 
+const CertificationsSection = () => {
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -70,7 +52,7 @@ const CertificationsSection = () => {
   };
 
   return (
-    <section className="py-20 md:py-28 relative overflow-hidden">
+    <section id="certifications" className="py-20 md:py-28 relative overflow-hidden">
       {/* Background */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-40 right-0 w-96 h-96 bg-purple-400/5 rounded-full filter blur-3xl"></div>
@@ -114,7 +96,9 @@ const CertificationsSection = () => {
               {/* Content */}
               <div className="relative z-10">
                 {/* Icon */}
-                <div className="text-4xl mb-4">{cert.icon}</div>
+                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-white/10 text-lg font-bold text-yellow-400">
+                  {cert.icon}
+                </div>
 
                 {/* Title */}
                 <h3 className="text-lg font-bold mb-2 text-slate-900 dark:text-white">
@@ -135,10 +119,15 @@ const CertificationsSection = () => {
                 </div>
               </div>
 
-              {/* Hover button */}
-              <button className="w-full mt-4 btn-secondary text-xs opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+              {/* Certificate button */}
+              <a
+                href={cert.certificateUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block w-full mt-4 btn-secondary text-xs text-center transition-opacity duration-300"
+              >
                 View Certificate
-              </button>
+              </a>
             </motion.div>
           ))}
         </motion.div>

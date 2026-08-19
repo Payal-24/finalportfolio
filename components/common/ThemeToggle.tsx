@@ -1,29 +1,35 @@
 'use client';
 
 import { useTheme } from 'next-themes';
-import { useEffect, useState } from 'react';
 import { Sun, Moon } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useSyncExternalStore } from 'react';
+
+const subscribe = () => () => {};
+const getClientSnapshot = () => true;
+const getServerSnapshot = () => false;
 
 export default function ThemeToggle() {
-  const { theme, setTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  if (!mounted) return null;
+  const { resolvedTheme, setTheme } = useTheme();
+  const isMounted = useSyncExternalStore(
+    subscribe,
+    getClientSnapshot,
+    getServerSnapshot
+  );
+  const isDark = resolvedTheme === 'dark';
 
   return (
     <motion.button
       whileHover={{ scale: 1.1 }}
       whileTap={{ scale: 0.95 }}
-      onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+      onClick={() => setTheme(isDark ? 'light' : 'dark')}
       className="p-2 rounded-lg glass hover:glass-light transition-all duration-300"
       aria-label="Toggle theme"
+      suppressHydrationWarning
     >
-      {theme === 'dark' ? (
+      {!isMounted ? (
+        <span className="block h-5 w-5" aria-hidden="true" />
+      ) : isDark ? (
         <Sun size={20} className="text-yellow-400" />
       ) : (
         <Moon size={20} className="text-slate-600" />

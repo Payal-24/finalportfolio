@@ -1,75 +1,165 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Code, Trophy } from 'lucide-react';
 
+type GithubStats = {
+  username: string;
+  profileUrl: string;
+  repositories: number;
+  contributions: number;
+  contributionLabel: string;
+};
+
+type LeetcodeStats = {
+  username: string;
+  profileUrl: string;
+  solved: number;
+  contests: number;
+  rating: number;
+};
+
+type GeeksforgeeksStats = {
+  username: string;
+  profileUrl: string;
+  solved: number;
+  score: number;
+};
+
+type HackerrankStats = {
+  username: string;
+  profileUrl: string;
+  badges: number;
+  solved: number;
+};
+
 const CodingProfilesSection = () => {
+  const [githubStats, setGithubStats] = useState<GithubStats | null>(null);
+  const [leetcodeStats, setLeetcodeStats] = useState<LeetcodeStats | null>(null);
+  const [geeksforgeeksStats, setGeeksforgeeksStats] = useState<GeeksforgeeksStats | null>(null);
+  const [hackerrankStats, setHackerrankStats] = useState<HackerrankStats | null>(null);
+
+  useEffect(() => {
+    let isActive = true;
+
+    fetch('/api/github')
+      .then((response) => (response.ok ? response.json() : null))
+      .then((data: GithubStats | null) => {
+        if (isActive && data) {
+          setGithubStats(data);
+        }
+      })
+      .catch(() => {
+        // Keep fallback values
+      });
+
+    fetch('/api/leetcode')
+      .then((response) => (response.ok ? response.json() : null))
+      .then((data: LeetcodeStats | null) => {
+        if (isActive && data) {
+          setLeetcodeStats(data);
+        }
+      })
+      .catch(() => {
+        // Keep fallback values
+      });
+
+    fetch('/api/geeksforgeeks')
+      .then((response) => (response.ok ? response.json() : null))
+      .then((data: GeeksforgeeksStats | null) => {
+        if (isActive && data) {
+          setGeeksforgeeksStats(data);
+        }
+      })
+      .catch(() => {
+        // Keep fallback values
+      });
+
+    fetch('/api/hackerrank')
+      .then((response) => (response.ok ? response.json() : null))
+      .then((data: HackerrankStats | null) => {
+        if (isActive && data) {
+          setHackerrankStats(data);
+        }
+      })
+      .catch(() => {
+        // Keep fallback values
+      });
+
+    return () => {
+      isActive = false;
+    };
+  }, []);
+
   const profiles = [
     {
       name: 'GitHub',
       icon: Code,
-      username: '@payal',
+      username: githubStats?.username ?? '@Payal-24',
       stats: [
-        { label: 'Repositories', value: '15+' },
-        { label: 'Contributions', value: '200+' },
+        {
+          label: 'Repositories',
+          value: githubStats ? String(githubStats.repositories) : 'Loading',
+        },
+        {
+          label: githubStats?.contributionLabel ?? 'Contributions',
+          value: githubStats ? String(githubStats.contributions) : 'Loading',
+        },
       ],
-      link: '#',
+      link: githubStats?.profileUrl ?? 'https://github.com/Payal-24',
       color: 'from-gray-600 to-gray-900',
     },
     {
       name: 'LeetCode',
       icon: Code,
-      username: '@payal',
+      username: leetcodeStats?.username ?? '@Payal2007',
       stats: [
-        { label: 'Problems Solved', value: '100+' },
-        { label: 'Contests', value: '5+' },
+        {
+          label: 'Problems Solved',
+          value: leetcodeStats ? String(leetcodeStats.solved) : 'Loading',
+        },
+        {
+          label: 'Contests',
+          value: leetcodeStats ? String(leetcodeStats.contests) : 'Loading',
+        },
       ],
-      link: '#',
+      link: leetcodeStats?.profileUrl ?? 'https://leetcode.com/u/Payal2007/',
       color: 'from-orange-500 to-red-500',
-    },
-    {
-      name: 'Codeforces',
-      icon: Trophy,
-      username: '@payal',
-      stats: [
-        { label: 'Rating', value: '1200+' },
-        { label: 'Contests', value: '8+' },
-      ],
-      link: '#',
-      color: 'from-blue-500 to-cyan-500',
     },
     {
       name: 'HackerRank',
       icon: Trophy,
-      username: '@payal',
+      username: hackerrankStats?.username ?? '@payaljindal537',
       stats: [
-        { label: 'Badges', value: '12' },
-        { label: 'Stars', value: '4.5★' },
+        {
+          label: 'Badges',
+          value: hackerrankStats ? String(hackerrankStats.badges) : 'Loading',
+        },
+        {
+          label: 'Solved',
+          value: hackerrankStats ? String(hackerrankStats.solved) : 'Loading',
+        },
       ],
-      link: '#',
+      link: hackerrankStats?.profileUrl ?? 'https://www.hackerrank.com/profile/payaljindal537',
       color: 'from-green-500 to-emerald-500',
     },
     {
       name: 'GeeksforGeeks',
       icon: Code,
-      username: '@payal',
+      username: geeksforgeeksStats?.username ?? '@payaljin10d9',
       stats: [
-        { label: 'Articles', value: '3' },
-        { label: 'Problems', value: '80+' },
+        {
+          label: 'Total Score',
+          value: geeksforgeeksStats ? String(geeksforgeeksStats.score) : 'Loading',
+        },
+        {
+          label: 'Problems Solved',
+          value: geeksforgeeksStats ? String(geeksforgeeksStats.solved) : 'Loading',
+        },
       ],
-      link: '#',
+      link: geeksforgeeksStats?.profileUrl ?? 'https://www.geeksforgeeks.org/profile/payaljin10d9?tab=activity',
       color: 'from-purple-500 to-pink-500',
-    },
-    {
-      name: 'CodeChef',
-      icon: Trophy,
-      username: '@payal',
-      stats: [
-        { label: 'Contests', value: '10+' },
-        { label: 'Streak', value: '30 days' },
-      ],
-      link: '#',
-      color: 'from-red-500 to-yellow-500',
     },
   ];
 
@@ -130,6 +220,8 @@ const CodingProfilesSection = () => {
               <motion.a
                 key={index}
                 href={profile.link}
+                target={profile.link === '#' ? undefined : '_blank'}
+                rel={profile.link === '#' ? undefined : 'noopener noreferrer'}
                 variants={itemVariants}
                 whileHover={{ scale: 1.05 }}
                 className="group card-hover rounded-xl p-6 cursor-pointer block"
@@ -162,9 +254,9 @@ const CodingProfilesSection = () => {
                 </div>
 
                 {/* Visit Button */}
-                <button className="w-full mt-4 btn-secondary text-sm">
+                <span className="block w-full mt-4 btn-secondary text-sm text-center">
                   Visit Profile
-                </button>
+                </span>
               </motion.a>
             );
           })}

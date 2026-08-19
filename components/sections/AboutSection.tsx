@@ -112,7 +112,7 @@ const AboutSection = () => {
         >
           {[
             { label: 'Year', value: '3rd' },
-            { label: 'CGPA', value: '8.94' },
+            { label: 'CGPA', value: '9.01' },
             { label: 'Projects', value: '5+' },
             { label: 'Learning', value: 'DSA & Web' },
           ].map((stat, index) => (

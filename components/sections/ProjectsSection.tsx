@@ -7,13 +7,13 @@ const ProjectsSection = () => {
   const projects = [
     {
       id: 1,
-      title: 'Student Management System',
+      title: 'cinbot',
       description:
-        'A comprehensive desktop application for managing student records with features like enrollment, grade management, and report generation.',
-      tech: ['C++', 'Data Structures', 'File Handling'],
-      github: '#',
-      live: '#',
-      image: '📊',
+        'An interactive conversational chatbot that helps users search for movies, manage a personalized watchlist, and find out about the latest releases.',
+      tech: ['JavaScript', 'HTML5', 'CSS3', 'REST API'],
+      github: 'https://github.com/Payal-24/movieSearchchatBot',
+      live: 'https://movie-searchchat-bot.vercel.app',
+      image: '🤖',
     },
     {
       id: 2,
@@ -21,19 +21,19 @@ const ProjectsSection = () => {
       description:
         'A modern, responsive portfolio website showcasing my projects and skills with smooth animations and dark mode support.',
       tech: ['Next.js', 'TypeScript', 'Tailwind CSS'],
-      github: '#',
+      github: 'https://github.com/Payal-24/finalportfolio',
       live: '#',
       image: '🌐',
     },
     {
       id: 3,
-      title: 'Movie Search Application',
+      title: 'Romify',
       description:
-        'A web application that allows users to search for movies, view details, and save favorites using the TMDB API.',
-      tech: ['JavaScript', 'React', 'REST API'],
-      github: '#',
-      live: '#',
-      image: '🎬',
+        'An e-commerce website featuring AR (Augmented Reality) visualization. Users can check in 3D using their camera to see how furniture, like a chair, fits and looks in their home.',
+      tech: ['React', 'Next.js', 'Node.js', 'Express', 'Vite'],
+      github: 'https://github.com/Payal-24/RomifyProject',
+      live: 'https://romify-project.vercel.app',
+      image: '🛋️',
     },
     {
       id: 4,
@@ -130,14 +130,44 @@ const ProjectsSection = () => {
 
                 {/* Links */}
                 <div className="flex gap-4">
-                  <button className="flex-1 btn-secondary flex items-center justify-center gap-2 group/btn">
-                    <Code size={18} className="group-hover/btn:animate-bounce" />
-                    Code
-                  </button>
-                  <button className="flex-1 btn-primary flex items-center justify-center gap-2 group/btn">
-                    <ExternalLink size={18} className="group-hover/btn:animate-bounce" />
-                    Demo
-                  </button>
+                  {project.github === '#' ? (
+                    <button
+                      disabled
+                      className="flex-1 btn-secondary flex items-center justify-center gap-2 opacity-50 cursor-not-allowed"
+                    >
+                      <Code size={18} />
+                      Code
+                    </button>
+                  ) : (
+                    <a
+                      href={project.github}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex-1 btn-secondary flex items-center justify-center gap-2 group/btn text-center"
+                    >
+                      <Code size={18} className="group-hover/btn:animate-bounce" />
+                      Code
+                    </a>
+                  )}
+                  {project.live === '#' ? (
+                    <button
+                      disabled
+                      className="flex-1 btn-primary flex items-center justify-center gap-2 opacity-50 cursor-not-allowed"
+                    >
+                      <ExternalLink size={18} />
+                      Demo
+                    </button>
+                  ) : (
+                    <a
+                      href={project.live}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex-1 btn-primary flex items-center justify-center gap-2 group/btn text-center"
+                    >
+                      <ExternalLink size={18} className="group-hover/btn:animate-bounce" />
+                      Demo
+                    </a>
+                  )}
                 </div>
               </div>
             </motion.div>
